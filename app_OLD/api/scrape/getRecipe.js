@@ -1,10 +1,6 @@
-import * as cheerio from 'cheerio';
-import parse from 'parse-ingredients';
+import * as cheerio from "cheerio";
 
-export default async function handler(req, res
-) {
-    const url = 'https://tasty.co/recipe/protein-packed-buddha-bowl'
-    // const url = 'https://adventuresincooking.com/pumpkin-pie/'
+export default async function getRecipe(url) {
     const response = await fetch(url);
     const body = await response.text();
 
@@ -12,9 +8,7 @@ export default async function handler(req, res
     const $ = cheerio.load(body);
     const jsonRaw = $(`script[type='application/ld+json']`)[0].children[0].data;
     const result = JSON.parse(jsonRaw);
-    const recipe = findNested(result['@graph'] ? result['@graph'] : result, "@type", "Recipe")
-    console.log(recipe)
-    res.status(200).json(recipe)
+    return findNested(result['@graph'] ? result['@graph'] : result, "@type", "Recipe")
 }
 
 const  findNested = (obj, key, value) => {
