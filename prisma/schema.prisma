@@ -10,7 +10,7 @@ datasource db {
 
 model Recipe {
   id        Int      @default(autoincrement()) @id
-  url   String
+  url   String @unique
   title     String
   description   String?
   cuisine    Cuisine?    @relation(fields: [cuisineId], references: [id])
@@ -20,19 +20,23 @@ model Recipe {
   instructions  Json?
   image String?
   rating Json?
-  Yield String?
+  recipeYield String?
   prepTime String?
   cookTime String?
   totalTime String?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
 }
 
 model RecipeIngredient {
   id    Int     @default(autoincrement()) @id
-  amount Int
+  amount    Float?
   measure    Measure?    @relation(fields: [measureId], references: [id])
-  measureId Int
+  measureId Int?
+  measureDisplay String
   ingredient    Ingredient?    @relation(fields: [ingredientId], references: [id])
-  ingredientId Int
+  ingredientId  Int
+  hashId  String @unique
 
   recipes Recipe[]
 }
@@ -40,12 +44,13 @@ model RecipeIngredient {
 model Ingredient {
   id    Int     @default(autoincrement()) @id
   name String  @unique
+  image String?
   recipeIngredient RecipeIngredient[]
 }
 
 model Measure {
   id    Int     @default(autoincrement()) @id
-  name String  @unique
+  name String?  @unique
   recipeIngredient RecipeIngredient[]
 }
 
